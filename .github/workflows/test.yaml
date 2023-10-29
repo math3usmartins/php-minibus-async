@@ -1,0 +1,60 @@
+name: test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request: ~
+  workflow_dispatch: ~
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: math3usmartins/php-minibus-builder:php5
+      env:
+        DEBIAN_FRONTEND: noninteractive
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: install composer packages
+        run: |
+          composer install \
+            --dev \
+            --optimize-autoloader \
+            --no-interaction
+      - run: tar -vcf app.tar --exclude .git ./
+      - uses: actions/upload-artifact@master
+        with:
+          name: app
+          path: ./app.tar
+
+  code-style:
+    needs: [build]
+    runs-on: ubuntu-latest
+    container:
+      image: math3usmartins/php-minibus-builder:php5
+      env:
+        DEBIAN_FRONTEND: noninteractive
+    steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: app
+          path: ./
+      - run: tar -xf ./app.tar
+      - run: vendor/bin/php-cs-fixer fix -vvv
+
+  unit-tests:
+    needs: [build]
+    runs-on: ubuntu-latest
+    container:
+      image: math3usmartins/php-minibus-builder:php5
+      env:
+        DEBIAN_FRONTEND: noninteractive
+    steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: app
+          path: ./
+      - run: tar -xf ./app.tar
+      - run: vendor/bin/phpunit
