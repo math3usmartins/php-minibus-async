@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Test\Transport\Unserializer\Denormalizer;
 
+use MiniBus\Message;
 use MiniBus\Transport\Unserializer\Denormalizer;
 
 final class StubDenormalizer implements Denormalizer
@@ -17,23 +20,22 @@ final class StubDenormalizer implements Denormalizer
     private $result;
 
     /**
-     * @param bool       $supports
      * @param mixed|null $result
      */
     public function __construct(
-        $supports,
+        bool $supports,
         $result = null
     ) {
         $this->supports = $supports;
         $this->result = $result;
     }
 
-    public function supports(array $data)
+    public function supports(array $data): bool
     {
         return $this->supports;
     }
 
-    public function execute(array $data)
+    public function execute(array $data): Message
     {
         return $this->result;
     }

@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Test\Transport\Unserializer;
 
 use Exception;
+use Generator;
 use MiniBus\Envelope\BasicEnvelope;
 use MiniBus\Envelope\BasicEnvelopeFactory;
 use MiniBus\Envelope\Stamp\StampCollection;
@@ -26,11 +29,10 @@ final class JsonUnserializerTest extends TestCase
     /**
      * @dataProvider scenarios
      *
-     * @param string $rawMessage
-     * @param mixed  $expected
+     * @param mixed $expected
      */
     public function testScenario(
-        $rawMessage,
+        string $rawMessage,
         CompositeDenormalizer $denormalizer,
         $expected
     ) {
@@ -47,7 +49,7 @@ final class JsonUnserializerTest extends TestCase
         }
     }
 
-    public function scenarios()
+    public function scenarios(): Generator
     {
         $subject = 'some-subject';
 

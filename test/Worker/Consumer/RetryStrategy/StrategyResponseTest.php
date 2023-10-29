@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Test\Transport\Worker\Consumer\RetryStrategy;
 
+use Generator;
 use MiniBus\Envelope\BasicEnvelope;
 use MiniBus\Envelope\EnvelopeCollection;
 use MiniBus\Envelope\Stamp\StampCollection;
@@ -32,7 +35,7 @@ final class StrategyResponseTest extends TestCase
         static::assertEquals($expectedNotRetriable, $response->findNotRetriable());
     }
 
-    public function scenarios()
+    public function scenarios(): Generator
     {
         yield 'empty collection' => [
             'envelopes' => new EnvelopeCollection([]),

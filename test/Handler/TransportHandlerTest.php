@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Test\Transport\Handler;
 
+use Generator;
 use MiniBus\Envelope;
 use MiniBus\Envelope\BasicEnvelope;
 use MiniBus\Envelope\Stamp\StampCollection;
@@ -42,7 +45,7 @@ final class TransportHandlerTest extends TestCase
         static::assertEquals($expectedSentEnvelopes, $sender->envelopes());
     }
 
-    public function scenarios()
+    public function scenarios(): Generator
     {
         $subject = 'some-subject';
 

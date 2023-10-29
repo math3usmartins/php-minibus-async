@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Transport\Worker\Consumer\RetryStrategy;
 
 use MiniBus\Envelope;
@@ -18,10 +20,7 @@ final class StrategyResponse
         $this->envelopes = $envelopes;
     }
 
-    /**
-     * @return EnvelopeCollection
-     */
-    public function findRetriable()
+    public function findRetriable(): EnvelopeCollection
     {
         return $this->envelopes->filter(
             function (Envelope $envelope) {
@@ -30,10 +29,7 @@ final class StrategyResponse
         );
     }
 
-    /**
-     * @return EnvelopeCollection
-     */
-    public function findNotRetriable()
+    public function findNotRetriable(): EnvelopeCollection
     {
         return $this->envelopes->filter(
             function (Envelope $envelope) {

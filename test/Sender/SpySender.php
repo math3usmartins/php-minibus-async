@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Test\Transport\Sender;
 
 use MiniBus\Envelope;
@@ -9,14 +11,14 @@ final class SpySender implements Sender
 {
     private $envelopes = [];
 
-    public function send(Envelope $envelope)
+    public function send(Envelope $envelope): Envelope
     {
         $this->envelopes[] = $envelope;
 
         return $envelope;
     }
 
-    public function envelopes()
+    public function envelopes(): array
     {
         return $this->envelopes;
     }

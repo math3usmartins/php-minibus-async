@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Test\Transport\Worker\Consumer\RetryStrategy;
 
 use Closure;
@@ -19,7 +21,7 @@ final class CallbackRetryStrategy implements RetryStrategy
         $this->callback = $callback;
     }
 
-    public function check(EnvelopeCollection $envelopes)
+    public function check(EnvelopeCollection $envelopes): StrategyResponse
     {
         return new StrategyResponse(
             $envelopes->map($this->callback)

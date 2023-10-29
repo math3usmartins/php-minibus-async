@@ -1,13 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Transport;
 
 use MiniBus\Envelope;
 
 interface Sender
 {
-    /**
-     * @return Envelope
-     */
-    public function send(Envelope $envelope);
+    public function send(Envelope $envelope): Envelope;
 }

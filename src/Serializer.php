@@ -1,13 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Transport;
 
 use MiniBus\Message;
 
 interface Serializer
 {
-    /**
-     * @return string
-     */
-    public function execute(Message $message);
+    public function execute(Message $message): string;
 }

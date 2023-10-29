@@ -1,15 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Transport;
 
 use MiniBus\Envelope\EnvelopeCollection;
 
 interface Receiver
 {
-    /**
-     * @return EnvelopeCollection
-     */
-    public function fetch();
+    public function fetch(): EnvelopeCollection;
 
     public function ack(EnvelopeCollection $envelopes);
 

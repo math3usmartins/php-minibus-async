@@ -11,8 +11,8 @@ $rules = [
     '@PhpCsFixer' => true,
     '@PhpCsFixer:risky' => true,
     '@Symfony' => true,
-    '@PHP56Migration' => true,
-    '@PHP56Migration:risky' => true,
+    '@PHP70Migration' => true,
+    '@PHP70Migration:risky' => true,
 
     'date_time_immutable' => true,
     'final_class' => true,
@@ -39,6 +39,8 @@ $rules = [
             'const',
         ],
     ],
+
+    'phpdoc_no_empty_return' => false,
 ];
 
 return $config->setRules($rules)

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Transport\Worker\StopStrategy;
 
 use MiniBus\Transport\Worker\StopStrategy;
@@ -30,7 +32,7 @@ final class CompositeStopStrategy implements StopStrategy
         $this->shouldStop = true;
     }
 
-    public function shouldStop()
+    public function shouldStop(): bool
     {
         if ($this->shouldStop) {
             return true;

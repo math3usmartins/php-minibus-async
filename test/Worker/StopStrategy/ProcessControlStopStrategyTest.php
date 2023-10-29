@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Test\Transport\Worker\StopStrategy;
 
 use Closure;
+use Generator;
 use MiniBus\Transport\Worker\StopStrategy\ProcessControlStopStrategy;
 use PHPUnit\Framework\TestCase;
 use const SIGALRM;
@@ -36,7 +39,7 @@ final class ProcessControlStopStrategyTest extends TestCase
         static::assertEquals($expected, $strategy->shouldStop());
     }
 
-    public function scenariosDispatchingAlarmSignal()
+    public function scenariosDispatchingAlarmSignal(): Generator
     {
         yield 'it must stop on given signal' => [
             'strategy factory' => function () {

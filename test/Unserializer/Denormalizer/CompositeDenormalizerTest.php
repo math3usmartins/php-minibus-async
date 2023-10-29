@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Test\Transport\Unserializer\Denormalizer;
 
 use Exception;
+use Generator;
 use MiniBus\Test\StubMessage;
 use MiniBus\Transport\Unserializer\Denormalizer\CompositeDenormalizer;
 use MiniBus\Transport\Unserializer\Denormalizer\DenormalizerNotFoundException;
@@ -29,7 +32,7 @@ final class CompositeDenormalizerTest extends TestCase
         static::assertEquals($expected, $denormalizer->supports($data));
     }
 
-    public function supportsMethodScenarios()
+    public function supportsMethodScenarios(): Generator
     {
         $data = [
             'headers' => ['foo' => 'bar'],
@@ -57,6 +60,8 @@ final class CompositeDenormalizerTest extends TestCase
      * @dataProvider executeMethodScenarios
      *
      * @param mixed $expected
+     *
+     * @throws DenormalizerNotFoundException
      */
     public function testExecuteMethod(
         CompositeDenormalizer $denormalizer,
@@ -71,7 +76,7 @@ final class CompositeDenormalizerTest extends TestCase
         }
     }
 
-    public function executeMethodScenarios()
+    public function executeMethodScenarios(): Generator
     {
         $subject = 'some-subject';
 

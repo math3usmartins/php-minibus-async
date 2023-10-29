@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Test\Transport\Worker\StopStrategy;
 
 use MiniBus\Transport\Worker\StopStrategy\MaxIterationCountStopStrategy;

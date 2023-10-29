@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Transport\Unserializer\Denormalizer;
 
 use MiniBus\Message;
@@ -20,10 +22,7 @@ final class CompositeDenormalizer implements Denormalizer
         $this->denormalizers = $normalizers;
     }
 
-    /**
-     * @return bool
-     */
-    public function supports(array $data)
+    public function supports(array $data): bool
     {
         foreach ($this->denormalizers as $denormalizer) {
             if ($denormalizer->supports($data)) {
@@ -36,10 +35,8 @@ final class CompositeDenormalizer implements Denormalizer
 
     /**
      * @throws DenormalizerNotFoundException
-     *
-     * @return Message
      */
-    public function execute(array $data)
+    public function execute(array $data): Message
     {
         foreach ($this->denormalizers as $denormalizer) {
             if ($denormalizer->supports($data)) {

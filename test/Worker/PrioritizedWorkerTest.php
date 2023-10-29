@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Test\Transport\Worker;
 
 use Closure;
+use Generator;
 use MiniBus\Dispatcher\DefaultDispatcher;
 use MiniBus\Envelope;
 use MiniBus\Envelope\BasicEnvelope;
@@ -38,7 +41,7 @@ final class PrioritizedWorkerTest extends TestCase
         $assertionCallback();
     }
 
-    public function scenarios()
+    public function scenarios(): Generator
     {
         $dispatcher = new DefaultDispatcher(
             new BasicEnvelopeFactory(),

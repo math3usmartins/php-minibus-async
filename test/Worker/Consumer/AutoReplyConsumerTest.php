@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Test\Transport\Worker\Consumer;
 
 use Closure;
 use Exception;
+use Generator;
 use MiniBus\Dispatcher\DefaultDispatcher;
 use MiniBus\Envelope;
 use MiniBus\Envelope\BasicEnvelope;
@@ -48,7 +51,7 @@ final class AutoReplyConsumerTest extends TestCase
         $receiverAssertionCallback($receiver);
     }
 
-    public function scenarios()
+    public function scenarios(): Generator
     {
         $exception = new Exception('something went wrong');
         $dispatcher = new DefaultDispatcher(

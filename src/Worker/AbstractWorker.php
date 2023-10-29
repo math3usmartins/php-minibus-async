@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Transport\Worker;
 
 use MiniBus\Transport\Worker;

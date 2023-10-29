@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Test\Transport\Worker\StopStrategy;
 
 use Closure;
+use Generator;
 use MiniBus\Transport\Worker\StopStrategy\CompositeStopStrategy;
 use MiniBus\Transport\Worker\StopStrategy\MaxIterationCountStopStrategy;
 use MiniBus\Transport\Worker\StopStrategy\ProcessControlStopStrategy;
@@ -38,7 +41,7 @@ final class CompositeStopStrategyTest extends TestCase
         static::assertEquals($expected, $compositeStrategy->shouldStop());
     }
 
-    public function scenarios()
+    public function scenarios(): Generator
     {
         yield 'single strategy expected to stop after 1 iteration' => [
             'strategy factory' => function () {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Transport\Worker\Consumer\Stamp;
 
 use Exception;
@@ -26,22 +28,22 @@ final class FailedStamp implements Stamp
         $this->receiver = $receiver;
     }
 
-    public function name()
+    public function name(): string
     {
         return self::NAME;
     }
 
-    public function receiver()
+    public function receiver(): Receiver
     {
         return $this->receiver;
     }
 
-    public function exception()
+    public function exception(): Exception
     {
         return $this->exception;
     }
 
-    public function isEqualTo(Stamp $anotherStamp)
+    public function isEqualTo(Stamp $anotherStamp): bool
     {
         return $anotherStamp instanceof self
             && $anotherStamp->exception === $this->exception;

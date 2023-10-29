@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Transport\Worker\StopStrategy;
 
 use MiniBus\Transport\Worker\StopStrategy;
@@ -23,7 +25,7 @@ final class ProcessControlStopStrategy implements StopStrategy
         pcntl_signal_dispatch();
     }
 
-    public function shouldStop()
+    public function shouldStop(): bool
     {
         return $this->shouldStop;
     }

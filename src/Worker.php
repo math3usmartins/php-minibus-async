@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Transport;
 
 use MiniBus\Transport\Worker\StopStrategy;
@@ -8,8 +10,5 @@ interface Worker
 {
     public function run();
 
-    /**
-     * @return StopStrategy
-     */
-    public function stopStrategy();
+    public function stopStrategy(): StopStrategy;
 }

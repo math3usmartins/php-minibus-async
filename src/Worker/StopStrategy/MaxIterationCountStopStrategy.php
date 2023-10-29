@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Transport\Worker\StopStrategy;
 
 use MiniBus\Transport\Worker\StopStrategy;
@@ -16,15 +18,12 @@ final class MaxIterationCountStopStrategy implements StopStrategy
      */
     private $count = 0;
 
-    /**
-     * @param int $max
-     */
-    public function __construct($max)
+    public function __construct(int $max)
     {
         $this->max = $max;
     }
 
-    public function shouldStop()
+    public function shouldStop(): bool
     {
         return $this->count >= $this->max;
     }

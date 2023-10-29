@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Test\Transport\Receiver;
 
 use MiniBus\Envelope;
@@ -23,10 +25,7 @@ final class InMemoryReceiver implements Receiver
         $this->envelopes = self::identifiable($envelopes);
     }
 
-    /**
-     * @return EnvelopeCollection
-     */
-    public static function identifiable(EnvelopeCollection $envelopes)
+    public static function identifiable(EnvelopeCollection $envelopes): EnvelopeCollection
     {
         return array_reduce(
             $envelopes->items(),
@@ -44,10 +43,7 @@ final class InMemoryReceiver implements Receiver
         );
     }
 
-    /**
-     * @return EnvelopeCollection
-     */
-    public function fetch()
+    public function fetch(): EnvelopeCollection
     {
         return $this->envelopes;
     }
@@ -99,7 +95,7 @@ final class InMemoryReceiver implements Receiver
     /**
      * @return string[]
      */
-    private static function getIdValues(EnvelopeCollection $envelopes)
+    private static function getIdValues(EnvelopeCollection $envelopes): array
     {
         return array_map(
             function (Envelope $envelope) {

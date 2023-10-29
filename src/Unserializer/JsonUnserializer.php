@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Transport\Unserializer;
 
 use MiniBus\Envelope;
@@ -27,12 +29,7 @@ final class JsonUnserializer implements Unserializer
         $this->envelopeFactory = $envelopeFactory;
     }
 
-    /**
-     * @param string $rawMessage
-     *
-     * @return Envelope
-     */
-    public function execute($rawMessage)
+    public function execute(string $rawMessage): Envelope
     {
         return $this->envelopeFactory->create(
             $this->denormalizer->execute(

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Transport\Handler;
 
 use MiniBus\Envelope;
@@ -20,7 +22,7 @@ final class TransportHandler implements Handler
         $this->sender = $sender;
     }
 
-    public function handle(Envelope $envelope)
+    public function handle(Envelope $envelope): Envelope
     {
         $senderStamp = new SenderStamp();
 

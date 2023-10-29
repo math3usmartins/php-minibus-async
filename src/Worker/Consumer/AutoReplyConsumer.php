@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Transport\Worker\Consumer;
 
 use Exception;
@@ -32,7 +34,7 @@ final class AutoReplyConsumer implements Consumer
         $this->retryStrategy = $retryStrategy;
     }
 
-    public function consume(Receiver $receiver)
+    public function consume(Receiver $receiver): EnvelopeCollection
     {
         $envelopes = $receiver->fetch()->map(
             function (Envelope $envelope) use ($receiver) {
@@ -65,10 +67,7 @@ final class AutoReplyConsumer implements Consumer
         $receiver->retry($retryResponse->findRetriable());
     }
 
-    /**
-     * @return Envelope
-     */
-    private function tryToConsumeEnvelope(Receiver $receiver, Envelope $envelope)
+    private function tryToConsumeEnvelope(Receiver $receiver, Envelope $envelope): Envelope
     {
         $alreadySentEnvelope = $envelope->withStamp(new SenderStamp());
 

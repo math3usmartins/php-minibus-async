@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MiniBus\Transport\Worker;
 
 use MiniBus\Transport\Receiver;
@@ -27,12 +29,11 @@ final class PrioritizedWorker extends AbstractWorker
     private $consumer;
 
     /**
-     * @param int        $sleepTimeInSeconds
      * @param Receiver[] $receivers
      */
     public function __construct(
         StopStrategy $stopStrategy,
-        $sleepTimeInSeconds,
+        int $sleepTimeInSeconds,
         Consumer $consumer,
         array $receivers
     ) {
@@ -42,7 +43,7 @@ final class PrioritizedWorker extends AbstractWorker
         $this->receivers = $receivers;
     }
 
-    public function stopStrategy()
+    public function stopStrategy(): StopStrategy
     {
         return $this->stopStrategy;
     }
