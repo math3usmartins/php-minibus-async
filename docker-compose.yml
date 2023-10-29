@@ -1,0 +1,18 @@
+version: "2.2"
+
+services:
+  php:
+    build:
+      dockerfile: .docker/php/Dockerfile
+      args:
+        WWW_DATA_UID: 1000
+        WWW_DATA_GID: 1000
+    working_dir: /var/www/app
+    user: www-data
+    entrypoint: ["/var/www/app/.docker/entrypoint.sh"]
+    command: "php"
+    environment:
+      COMPOSER_HOME: "/var/www/.composer"
+    volumes:
+      - ./:/var/www/app
+      - .docker/composer:/var/www/.composer
