@@ -10,23 +10,9 @@ use MiniBus\Transport\Receiver;
 
 final class FailedStamp implements Stamp
 {
-    const NAME = 'transport:worker:consumer:failed';
+    public const NAME = 'transport:worker:consumer:failed';
 
-    /**
-     * @var Receiver
-     */
-    private $receiver;
-
-    /**
-     * @var Exception
-     */
-    private $exception;
-
-    public function __construct(Receiver $receiver, Exception $exception)
-    {
-        $this->exception = $exception;
-        $this->receiver = $receiver;
-    }
+    public function __construct(private Receiver $receiver, private Exception $exception) {}
 
     public function name(): string
     {

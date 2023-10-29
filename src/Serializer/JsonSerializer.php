@@ -12,7 +12,8 @@ final class JsonSerializer implements Serializer
     public function execute(Message $message): string
     {
         return json_encode(
-            $message->normalize()
+            $message->normalize(),
+            JSON_THROW_ON_ERROR,
         );
     }
 }

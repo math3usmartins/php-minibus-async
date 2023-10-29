@@ -9,7 +9,10 @@ use MiniBus\Transport\Sender;
 
 final class SpySender implements Sender
 {
-    private $envelopes = [];
+    /**
+     * @var Envelope[]
+     */
+    private array $envelopes = [];
 
     public function send(Envelope $envelope): Envelope
     {
@@ -18,6 +21,9 @@ final class SpySender implements Sender
         return $envelope;
     }
 
+    /**
+     * @return Envelope[]
+     */
     public function envelopes(): array
     {
         return $this->envelopes;

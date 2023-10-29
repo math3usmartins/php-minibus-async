@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace MiniBus\Test\Transport\Worker;
 
 use Closure;
-use Generator;
 use MiniBus\Dispatcher\DefaultDispatcher;
 use MiniBus\Envelope;
 use MiniBus\Envelope\BasicEnvelope;
@@ -24,6 +23,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
+ *
  * @covers \MiniBus\Transport\Worker\Consumer\AutoReplyConsumer
  * @covers \MiniBus\Transport\Worker\PrioritizedWorker
  * @covers \MiniBus\Transport\Worker\StopStrategy\MaxIterationCountStopStrategy
@@ -31,35 +31,35 @@ use PHPUnit\Framework\TestCase;
 final class PrioritizedWorkerTest extends TestCase
 {
     /**
-     * @dataProvider scenarios
+     * @dataProvider provideRunCases
      */
     public function testRun(
         PrioritizedWorker $worker,
-        Closure $assertionCallback
-    ) {
+        Closure $assertionCallback,
+    ): void {
         $worker->run();
         $assertionCallback();
     }
 
-    public function scenarios(): Generator
+    public function provideRunCases(): iterable
     {
         $dispatcher = new DefaultDispatcher(
             new BasicEnvelopeFactory(),
-            new MiddlewareStack([])
+            new MiddlewareStack([]),
         );
 
         $envelope = new BasicEnvelope(
             new StubMessage('some-subject', ['header' => 'h'], ['body' => 'v']),
             new StampCollection([
                 new StubStamp('key', 'value'),
-            ])
+            ]),
         );
 
         $anotherEnvelope = new BasicEnvelope(
             new StubMessage('another-subject', ['another-header' => 'h'], ['another-body' => 'b']),
             new StampCollection([
                 new StubStamp('another-key', 'another-value'),
-            ])
+            ]),
         );
 
         $envelopes = new EnvelopeCollection([
@@ -73,10 +73,8 @@ final class PrioritizedWorkerTest extends TestCase
         $consumer = new AutoReplyConsumer(
             $dispatcher,
             new CallbackRetryStrategy(
-                function (Envelope $envelope) {
-                    return $envelope;
-                }
-            )
+                static fn (Envelope $envelope) => $envelope,
+            ),
         );
 
         yield 'it must consume all and auto stop after time limit' => [
@@ -84,11 +82,11 @@ final class PrioritizedWorkerTest extends TestCase
                 new MaxIterationCountStopStrategy(5),
                 1,
                 $consumer,
-                [$receiver, $anotherReceiver]
+                [$receiver, $anotherReceiver],
             ),
-            'assertion callback' => function () use ($receiver, $anotherReceiver) {
-                static::assertEquals([], $receiver->fetch()->items());
-                static::assertEquals([], $anotherReceiver->fetch()->items());
+            'assertion callback' => static function () use ($receiver, $anotherReceiver): void {
+                self::assertEquals([], $receiver->fetch()->items());
+                self::assertEquals([], $anotherReceiver->fetch()->items());
             },
         ];
 
@@ -100,11 +98,11 @@ final class PrioritizedWorkerTest extends TestCase
                 new MaxIterationCountStopStrategy(1),
                 1,
                 $consumer,
-                [$receiver, $anotherReceiver]
+                [$receiver, $anotherReceiver],
             ),
-            'assertion callback' => function () use ($receiver, $anotherReceiver, $envelopes) {
-                static::assertEquals([], $receiver->fetch()->items());
-                static::assertEquals(InMemoryReceiver::identifiable($envelopes), $anotherReceiver->fetch());
+            'assertion callback' => static function () use ($receiver, $anotherReceiver, $envelopes): void {
+                self::assertEquals([], $receiver->fetch()->items());
+                self::assertEquals(InMemoryReceiver::identifiable($envelopes), $anotherReceiver->fetch());
             },
         ];
     }

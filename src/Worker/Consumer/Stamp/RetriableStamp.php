@@ -8,7 +8,7 @@ use MiniBus\Envelope\Stamp;
 
 final class RetriableStamp implements Stamp
 {
-    const NAME = 'transport:worker:consumer:retriable';
+    public const NAME = 'transport:worker:consumer:retriable';
 
     public function name(): string
     {

@@ -14,3 +14,7 @@ phpstan:
 	docker compose run --rm php vendor/bin/phpstan analyse \
 		-c phpstan.neon \
 		-- src test
+
+.PHONY: rector
+rector:
+	docker compose run --rm php vendor/bin/rector

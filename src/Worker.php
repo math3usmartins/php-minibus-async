@@ -8,7 +8,7 @@ use MiniBus\Transport\Worker\StopStrategy;
 
 interface Worker
 {
-    public function run();
+    public function run(): void;
 
     public function stopStrategy(): StopStrategy;
 }

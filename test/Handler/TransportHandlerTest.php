@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MiniBus\Test\Transport\Handler;
 
-use Generator;
 use MiniBus\Envelope;
 use MiniBus\Envelope\BasicEnvelope;
 use MiniBus\Envelope\Stamp\StampCollection;
@@ -23,16 +22,16 @@ use PHPUnit\Framework\TestCase;
 final class TransportHandlerTest extends TestCase
 {
     /**
-     * @dataProvider scenarios
+     * @dataProvider provideHandleCases
      */
     public function testHandle(
         Envelope $givenEnvelope,
-        Envelope $expectedEnvelope
-    ) {
+        Envelope $expectedEnvelope,
+    ): void {
         $sender = new SpySender();
         $handler = new TransportHandler($sender);
 
-        static::assertEquals($expectedEnvelope, $handler->handle($givenEnvelope));
+        self::assertEquals($expectedEnvelope, $handler->handle($givenEnvelope));
 
         $alreadySent = $givenEnvelope->stamps()->contains(new SenderStamp());
 
@@ -42,16 +41,16 @@ final class TransportHandlerTest extends TestCase
             // scenario: envelope was NOT already sent, MUST be sent now
             : [$givenEnvelope];
 
-        static::assertEquals($expectedSentEnvelopes, $sender->envelopes());
+        self::assertEquals($expectedSentEnvelopes, $sender->envelopes());
     }
 
-    public function scenarios(): Generator
+    public function provideHandleCases(): iterable
     {
         $subject = 'some-subject';
 
         $envelope = new BasicEnvelope(
             new StubMessage($subject, ['header' => 'h'], ['body' => 'v']),
-            new StampCollection([])
+            new StampCollection([]),
         );
 
         $stampedEnvelope = $envelope->withStamp(new SenderStamp());

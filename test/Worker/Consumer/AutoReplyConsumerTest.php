@@ -6,7 +6,6 @@ namespace MiniBus\Test\Transport\Worker\Consumer;
 
 use Closure;
 use Exception;
-use Generator;
 use MiniBus\Dispatcher\DefaultDispatcher;
 use MiniBus\Envelope;
 use MiniBus\Envelope\BasicEnvelope;
@@ -38,41 +37,41 @@ use PHPUnit\Framework\TestCase;
 final class AutoReplyConsumerTest extends TestCase
 {
     /**
-     * @dataProvider scenarios
+     * @dataProvider provideConsumeCases
      */
     public function testConsume(
         AutoReplyConsumer $consumer,
         Receiver $receiver,
         EnvelopeCollection $expectedEnvelopes,
-        Closure $receiverAssertionCallback
-    ) {
-        static::assertEquals($expectedEnvelopes, $consumer->consume($receiver));
+        Closure $receiverAssertionCallback,
+    ): void {
+        self::assertEquals($expectedEnvelopes, $consumer->consume($receiver));
 
         $receiverAssertionCallback($receiver);
     }
 
-    public function scenarios(): Generator
+    public function provideConsumeCases(): iterable
     {
         $exception = new Exception('something went wrong');
         $dispatcher = new DefaultDispatcher(
             new BasicEnvelopeFactory(),
             new MiddlewareStack([
                 new FailingMiddleware($exception),
-            ])
+            ]),
         );
 
         $envelope = new BasicEnvelope(
             new StubMessage('some-subject', ['header' => 'h'], ['body' => 'v']),
             new StampCollection([
                 new StubStamp('key', 'value'),
-            ])
+            ]),
         );
 
         $anotherEnvelope = new BasicEnvelope(
             new StubMessage('another-subject', ['another-header' => 'h'], ['another-body' => 'b']),
             new StampCollection([
                 new StubStamp('another-key', 'another-value'),
-            ])
+            ]),
         );
 
         $envelopes = new EnvelopeCollection([
@@ -86,22 +85,18 @@ final class AutoReplyConsumerTest extends TestCase
             'consumer' => new AutoReplyConsumer(
                 $dispatcher,
                 new CallbackRetryStrategy(
-                    function (Envelope $envelope) {
-                        return $envelope;
-                    }
-                )
+                    static fn (Envelope $envelope) => $envelope,
+                ),
             ),
             'receiver' => $receiver,
             'expected' => InMemoryReceiver::identifiable($envelopes)->map(
-                function (Envelope $envelope) use ($exception, $receiver) {
-                    return $envelope
-                        // it MUST add SenderStamp to envelopes
-                        ->withStamp(new SenderStamp())
-                        // it MUST mark envelope as failed
-                        ->withStamp(new FailedStamp($receiver, $exception));
-                }
+                static fn (Envelope $envelope) => $envelope
+                    // it MUST add SenderStamp to envelopes
+                    ->withStamp(new SenderStamp())
+                    // it MUST mark envelope as failed
+                    ->withStamp(new FailedStamp($receiver, $exception)),
             ),
-            'receiver assertion callback' => function (Receiver $receiver) {
+            'receiver assertion callback' => static function (Receiver $receiver): void {
                 // receiver should discard all failing messages
                 self::assertEquals([], $receiver->fetch()->items());
             },
@@ -113,26 +108,22 @@ final class AutoReplyConsumerTest extends TestCase
             'consumer' => new AutoReplyConsumer(
                 $dispatcher,
                 new CallbackRetryStrategy(
-                    function (Envelope $envelope) {
-                        return 'another-subject' === $envelope->message()->subject()
-                            ? $envelope->withStamp(new RetriableStamp())
-                            : $envelope;
-                    }
-                )
+                    static fn (Envelope $envelope) => 'another-subject' === $envelope->message()->subject()
+                        ? $envelope->withStamp(new RetriableStamp())
+                        : $envelope,
+                ),
             ),
             'receiver' => $receiver,
             'expected' => InMemoryReceiver::identifiable($envelopes)->map(
-                function (Envelope $envelope) use ($exception, $receiver) {
-                    return $envelope
-                        // it MUST add SenderStamp to envelopes
-                        ->withStamp(new SenderStamp())
-                        // it MUST mark envelope as failed
-                        ->withStamp(new FailedStamp($receiver, $exception));
-                }
+                static fn (Envelope $envelope) => $envelope
+                    // it MUST add SenderStamp to envelopes
+                    ->withStamp(new SenderStamp())
+                    // it MUST mark envelope as failed
+                    ->withStamp(new FailedStamp($receiver, $exception)),
             ),
-            'receiver assertion callback' => function (Receiver $receiver) use ($anotherEnvelope) {
+            'receiver assertion callback' => static function (Receiver $receiver) use ($anotherEnvelope): void {
                 $anotherEnvelopeWithId = $anotherEnvelope->withStamp(
-                    new StubStamp(InMemoryReceiver::IN_MEMORY_ID_STAMP_NAME, '1')
+                    new StubStamp(InMemoryReceiver::IN_MEMORY_ID_STAMP_NAME, '1'),
                 );
 
                 // in-memory receiver should keep messages that are retriable
@@ -142,7 +133,7 @@ final class AutoReplyConsumerTest extends TestCase
 
         $dispatcher = new DefaultDispatcher(
             new BasicEnvelopeFactory(),
-            new MiddlewareStack([])
+            new MiddlewareStack([]),
         );
 
         $receiver = new InMemoryReceiver($envelopes);
@@ -151,22 +142,18 @@ final class AutoReplyConsumerTest extends TestCase
             'consumer' => new AutoReplyConsumer(
                 $dispatcher,
                 new CallbackRetryStrategy(
-                    function (Envelope $envelope) {
-                        return $envelope;
-                    }
-                )
+                    static fn (Envelope $envelope) => $envelope,
+                ),
             ),
             'receiver' => $receiver,
             'expected' => InMemoryReceiver::identifiable($envelopes)->map(
-                function (Envelope $envelope) {
-                    return $envelope
-                        // it MUST add SenderStamp to envelopes
-                        ->withStamp(new SenderStamp())
-                        // it MUST mark envelope as failed
-                        ->withStamp(new SuccessfulStamp());
-                }
+                static fn (Envelope $envelope) => $envelope
+                    // it MUST add SenderStamp to envelopes
+                    ->withStamp(new SenderStamp())
+                    // it MUST mark envelope as failed
+                    ->withStamp(new SuccessfulStamp()),
             ),
-            'receiver assertion callback' => function (Receiver $receiver) {
+            'receiver assertion callback' => static function (Receiver $receiver): void {
                 // in-memory receiver should discard successful messages
                 self::assertEquals([], $receiver->fetch()->items());
             },

@@ -1,4 +1,4 @@
-FROM php:7.0-alpine
+FROM php:8.0-alpine
 
 COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
 
@@ -12,7 +12,8 @@ RUN usermod -u ${WWW_DATA_UID} www-data \
 
 RUN apk add --no-cache ${PHPIZE_DEPS}
 
-RUN curl --insecure -L https://pecl.php.net/get/xdebug-2.7.2.tgz -o /tmp/xdebug.tgz \
+RUN apk add --update linux-headers \
+    && curl --insecure -L https://pecl.php.net/get/xdebug-3.2.2.tgz -o /tmp/xdebug.tgz \
     && pecl install --offline /tmp/xdebug.tgz \
     && docker-php-ext-enable xdebug
 

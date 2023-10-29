@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace MiniBus\Test\Transport\Unserializer\Denormalizer;
 
 use Exception;
-use Generator;
 use MiniBus\Test\StubMessage;
 use MiniBus\Transport\Unserializer\Denormalizer\CompositeDenormalizer;
 use MiniBus\Transport\Unserializer\Denormalizer\DenormalizerNotFoundException;
 use PHPUnit\Framework\TestCase;
-use function get_class;
 
 /**
  * @covers \MiniBus\Transport\Unserializer\Denormalizer\CompositeDenormalizer
@@ -20,19 +18,17 @@ use function get_class;
 final class CompositeDenormalizerTest extends TestCase
 {
     /**
-     * @dataProvider supportsMethodScenarios
-     *
-     * @param mixed $expected
+     * @dataProvider provideSupportsMethodCases
      */
     public function testSupportsMethod(
         CompositeDenormalizer $denormalizer,
         array $data,
-        $expected
-    ) {
-        static::assertEquals($expected, $denormalizer->supports($data));
+        mixed $expected,
+    ): void {
+        self::assertEquals($expected, $denormalizer->supports($data));
     }
 
-    public function supportsMethodScenarios(): Generator
+    public function provideSupportsMethodCases(): iterable
     {
         $data = [
             'headers' => ['foo' => 'bar'],
@@ -57,26 +53,24 @@ final class CompositeDenormalizerTest extends TestCase
     }
 
     /**
-     * @dataProvider executeMethodScenarios
-     *
-     * @param mixed $expected
+     * @dataProvider provideExecuteMethodCases
      *
      * @throws DenormalizerNotFoundException
      */
     public function testExecuteMethod(
         CompositeDenormalizer $denormalizer,
         array $data,
-        $expected
-    ) {
+        mixed $expected,
+    ): void {
         if ($expected instanceof Exception) {
-            self::expectException(get_class($expected));
+            self::expectException($expected::class);
             $denormalizer->execute($data);
         } else {
-            static::assertEquals($expected, $denormalizer->execute($data));
+            self::assertEquals($expected, $denormalizer->execute($data));
         }
     }
 
-    public function executeMethodScenarios(): Generator
+    public function provideExecuteMethodCases(): iterable
     {
         $subject = 'some-subject';
 

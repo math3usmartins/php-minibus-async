@@ -5,22 +5,23 @@ declare(strict_types=1);
 namespace MiniBus\Transport\Worker\StopStrategy;
 
 use MiniBus\Transport\Worker\StopStrategy;
+
 use function pcntl_signal;
 
 final class ProcessControlStopStrategy implements StopStrategy
 {
-    private $shouldStop = false;
+    private bool $shouldStop = false;
 
     public function __construct(array $signals)
     {
         foreach ($signals as $signal) {
-            pcntl_signal($signal, function () {
+            pcntl_signal($signal, function (): void {
                 $this->stop();
             });
         }
     }
 
-    public function iterate()
+    public function iterate(): void
     {
         pcntl_signal_dispatch();
     }
@@ -30,7 +31,7 @@ final class ProcessControlStopStrategy implements StopStrategy
         return $this->shouldStop;
     }
 
-    public function stop()
+    public function stop(): void
     {
         $this->shouldStop = true;
     }

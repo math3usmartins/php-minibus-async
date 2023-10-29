@@ -11,31 +11,19 @@ use MiniBus\Transport\Unserializer;
 
 final class JsonUnserializer implements Unserializer
 {
-    /**
-     * @var Denormalizer
-     */
-    private $denormalizer;
-
-    /**
-     * @var EnvelopeFactory
-     */
-    private $envelopeFactory;
-
     public function __construct(
-        Denormalizer $denormalizer,
-        EnvelopeFactory $envelopeFactory
-    ) {
-        $this->denormalizer = $denormalizer;
-        $this->envelopeFactory = $envelopeFactory;
-    }
+        private Denormalizer $denormalizer,
+        private EnvelopeFactory $envelopeFactory,
+    ) {}
 
     public function execute(string $rawMessage): Envelope
     {
         return $this->envelopeFactory->create(
             $this->denormalizer->execute(
-                json_decode($rawMessage, true)
+                // @phpstan-ignore-next-line
+                json_decode($rawMessage, true, 512, JSON_THROW_ON_ERROR),
             ),
-            new StampCollection([])
+            new StampCollection([]),
         );
     }
 }

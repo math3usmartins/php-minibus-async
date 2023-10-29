@@ -8,17 +8,15 @@ use MiniBus\Envelope;
 use MiniBus\Envelope\EnvelopeCollection;
 use MiniBus\Test\Envelope\Stamp\StubStamp;
 use MiniBus\Transport\Receiver;
+
 use function count;
 use function in_array;
 
 final class InMemoryReceiver implements Receiver
 {
-    const IN_MEMORY_ID_STAMP_NAME = 'in-memory-id';
+    public const IN_MEMORY_ID_STAMP_NAME = 'in-memory-id';
 
-    /**
-     * @var EnvelopeCollection
-     */
-    private $envelopes;
+    private \MiniBus\Envelope\EnvelopeCollection $envelopes;
 
     public function __construct(EnvelopeCollection $envelopes)
     {
@@ -29,17 +27,15 @@ final class InMemoryReceiver implements Receiver
     {
         return array_reduce(
             $envelopes->items(),
-            function (EnvelopeCollection $envelopes, Envelope $envelope) {
-                return $envelopes->with(
-                    $envelope->withStamp(
-                        new StubStamp(
-                            self::IN_MEMORY_ID_STAMP_NAME,
-                            (string) count($envelopes->items())
-                        )
-                    )
-                );
-            },
-            new EnvelopeCollection([])
+            static fn (EnvelopeCollection $envelopes, Envelope $envelope) => $envelopes->with(
+                $envelope->withStamp(
+                    new StubStamp(
+                        self::IN_MEMORY_ID_STAMP_NAME,
+                        (string) count($envelopes->items()),
+                    ),
+                ),
+            ),
+            new EnvelopeCollection([]),
         );
     }
 
@@ -48,45 +44,45 @@ final class InMemoryReceiver implements Receiver
         return $this->envelopes;
     }
 
-    public function ack(EnvelopeCollection $envelopes)
+    public function ack(EnvelopeCollection $envelopes): void
     {
         $ackIdValues = self::getIdValues($envelopes);
 
         $remaining = array_values(
             array_filter(
                 $this->envelopes->items(),
-                function (Envelope $current) use ($ackIdValues) {
+                static function (Envelope $current) use ($ackIdValues) {
                     /** @var StubStamp $stamp */
                     $stamp = $current->stamps()->last(self::IN_MEMORY_ID_STAMP_NAME);
 
                     return !in_array($stamp->keyValue(), $ackIdValues, true);
-                }
-            )
+                },
+            ),
         );
 
         $this->envelopes = new EnvelopeCollection($remaining);
     }
 
-    public function reject(EnvelopeCollection $envelopes)
+    public function reject(EnvelopeCollection $envelopes): void
     {
         $rejectedIdValues = self::getIdValues($envelopes);
 
         $remaining = array_values(
             array_filter(
                 $this->envelopes->items(),
-                function (Envelope $current) use ($rejectedIdValues) {
+                static function (Envelope $current) use ($rejectedIdValues) {
                     /** @var StubStamp $stamp */
                     $stamp = $current->stamps()->last(self::IN_MEMORY_ID_STAMP_NAME);
 
                     return !in_array($stamp->keyValue(), $rejectedIdValues, true);
-                }
-            )
+                },
+            ),
         );
 
         $this->envelopes = new EnvelopeCollection($remaining);
     }
 
-    public function retry(EnvelopeCollection $envelopes)
+    public function retry(EnvelopeCollection $envelopes): void
     {
         // nothing to do in this case,
         // current collection MUST NOT change
@@ -98,13 +94,13 @@ final class InMemoryReceiver implements Receiver
     private static function getIdValues(EnvelopeCollection $envelopes): array
     {
         return array_map(
-            function (Envelope $envelope) {
+            static function (Envelope $envelope) {
                 /** @var StubStamp $stamp */
                 $stamp = $envelope->stamps()->last(self::IN_MEMORY_ID_STAMP_NAME);
 
                 return $stamp->keyValue();
             },
-            $envelopes->items()
+            $envelopes->items(),
         );
     }
 }

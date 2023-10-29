@@ -8,12 +8,12 @@ use MiniBus\Transport\Worker;
 
 abstract class AbstractWorker implements Worker
 {
-    public function run()
+    public function run(): void
     {
         while (!$this->stopStrategy()->shouldStop()) {
             $this->receive();
         }
     }
 
-    abstract protected function receive();
+    abstract protected function receive(): void;
 }

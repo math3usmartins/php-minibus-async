@@ -14,24 +14,24 @@ use PHPUnit\Framework\TestCase;
  */
 final class MaxIterationCountStopStrategyTest extends TestCase
 {
-    public function testItMustStopAfterOneIteration()
+    public function testItMustStopAfterOneIteration(): void
     {
         $strategy = new MaxIterationCountStopStrategy(1);
-        static::assertFalse($strategy->shouldStop());
+        self::assertFalse($strategy->shouldStop());
 
         $strategy->iterate();
-        static::assertTrue($strategy->shouldStop());
+        self::assertTrue($strategy->shouldStop());
     }
 
-    public function testItMustStopAfterTwoIterations()
+    public function testItMustStopAfterTwoIterations(): void
     {
         $strategy = new MaxIterationCountStopStrategy(2);
-        static::assertFalse($strategy->shouldStop());
+        self::assertFalse($strategy->shouldStop());
 
         $strategy->iterate();
-        static::assertFalse($strategy->shouldStop());
+        self::assertFalse($strategy->shouldStop());
 
         $strategy->iterate();
-        static::assertTrue($strategy->shouldStop());
+        self::assertTrue($strategy->shouldStop());
     }
 }

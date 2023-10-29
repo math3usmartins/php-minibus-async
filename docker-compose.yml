@@ -13,6 +13,7 @@ services:
     command: "php"
     environment:
       COMPOSER_HOME: "/var/www/.composer"
+      XDEBUG_MODE: "coverage"
     volumes:
       - ./:/var/www/app
       - .docker/composer:/var/www/.composer

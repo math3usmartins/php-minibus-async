@@ -10,17 +10,9 @@ use MiniBus\Transport\Unserializer\Denormalizer;
 final class CompositeDenormalizer implements Denormalizer
 {
     /**
-     * @var Denormalizer[]
+     * @param Denormalizer[] $denormalizers
      */
-    private $denormalizers;
-
-    /**
-     * @param Denormalizer[] $normalizers
-     */
-    public function __construct(array $normalizers)
-    {
-        $this->denormalizers = $normalizers;
-    }
+    public function __construct(private array $denormalizers) {}
 
     public function supports(array $data): bool
     {

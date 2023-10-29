@@ -11,16 +11,7 @@ use MiniBus\Transport\Sender\SenderStamp;
 
 final class TransportHandler implements Handler
 {
-    /**
-     * @var Sender
-     */
-    private $sender;
-
-    public function __construct(
-        Sender $sender
-    ) {
-        $this->sender = $sender;
-    }
+    public function __construct(private Sender $sender) {}
 
     public function handle(Envelope $envelope): Envelope
     {

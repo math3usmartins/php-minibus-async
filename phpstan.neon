@@ -1,2 +1,7 @@
 includes:
-    - vendor/phpstan/phpstan/conf/config.levelmax.neon
+    - phar://vendor/phpstan/phpstan/phpstan.phar/conf/config.levelmax.neon
+
+parameters:
+    ignoreErrors:
+        - '#return type has no value type specified in iterable type iterable#'
+        - '#has parameter .+ with no value type specified in iterable type array#'

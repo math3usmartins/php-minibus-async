@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace MiniBus\Test\Transport\Unserializer;
 
 use Exception;
-use Generator;
 use MiniBus\Envelope\BasicEnvelope;
 use MiniBus\Envelope\BasicEnvelopeFactory;
 use MiniBus\Envelope\Stamp\StampCollection;
@@ -15,7 +14,6 @@ use MiniBus\Transport\Unserializer\Denormalizer\CompositeDenormalizer;
 use MiniBus\Transport\Unserializer\Denormalizer\DenormalizerNotFoundException;
 use MiniBus\Transport\Unserializer\JsonUnserializer;
 use PHPUnit\Framework\TestCase;
-use function get_class;
 
 /**
  * @covers \MiniBus\Envelope\BasicEnvelopeFactory
@@ -27,29 +25,27 @@ use function get_class;
 final class JsonUnserializerTest extends TestCase
 {
     /**
-     * @dataProvider scenarios
-     *
-     * @param mixed $expected
+     * @dataProvider provideScenarioCases
      */
     public function testScenario(
         string $rawMessage,
         CompositeDenormalizer $denormalizer,
-        $expected
-    ) {
+        mixed $expected,
+    ): void {
         $unserializer = new JsonUnserializer(
             $denormalizer,
-            new BasicEnvelopeFactory()
+            new BasicEnvelopeFactory(),
         );
 
         if ($expected instanceof Exception) {
-            self::expectException(get_class($expected));
+            self::expectException($expected::class);
             $unserializer->execute($rawMessage);
         } else {
-            static::assertEquals($expected, $unserializer->execute($rawMessage));
+            self::assertEquals($expected, $unserializer->execute($rawMessage));
         }
     }
 
-    public function scenarios(): Generator
+    public function provideScenarioCases(): iterable
     {
         $subject = 'some-subject';
 

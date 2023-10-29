@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace MiniBus\Test\Transport\Worker\Consumer\RetryStrategy;
 
-use Generator;
 use MiniBus\Envelope\BasicEnvelope;
 use MiniBus\Envelope\EnvelopeCollection;
 use MiniBus\Envelope\Stamp\StampCollection;
@@ -22,20 +21,20 @@ use PHPUnit\Framework\TestCase;
 final class StrategyResponseTest extends TestCase
 {
     /**
-     * @dataProvider scenarios
+     * @dataProvider provideCheckResponseCases
      */
     public function testCheckResponse(
         EnvelopeCollection $envelopes,
         EnvelopeCollection $expectedRetriable,
-        EnvelopeCollection $expectedNotRetriable
-    ) {
+        EnvelopeCollection $expectedNotRetriable,
+    ): void {
         $response = new StrategyResponse($envelopes);
 
-        static::assertEquals($expectedRetriable, $response->findRetriable());
-        static::assertEquals($expectedNotRetriable, $response->findNotRetriable());
+        self::assertEquals($expectedRetriable, $response->findRetriable());
+        self::assertEquals($expectedNotRetriable, $response->findNotRetriable());
     }
 
-    public function scenarios(): Generator
+    public function provideCheckResponseCases(): iterable
     {
         yield 'empty collection' => [
             'envelopes' => new EnvelopeCollection([]),

@@ -10,9 +10,9 @@ interface Receiver
 {
     public function fetch(): EnvelopeCollection;
 
-    public function ack(EnvelopeCollection $envelopes);
+    public function ack(EnvelopeCollection $envelopes): void;
 
-    public function reject(EnvelopeCollection $envelopes);
+    public function reject(EnvelopeCollection $envelopes): void;
 
-    public function retry(EnvelopeCollection $envelopes);
+    public function retry(EnvelopeCollection $envelopes): void;
 }

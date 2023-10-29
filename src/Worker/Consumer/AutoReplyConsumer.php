@@ -16,41 +16,26 @@ use MiniBus\Transport\Worker\Consumer\Stamp\SuccessfulStamp;
 
 final class AutoReplyConsumer implements Consumer
 {
-    /**
-     * @var DefaultDispatcher
-     */
-    private $dispatcher;
-
-    /**
-     * @var RetryStrategy
-     */
-    private $retryStrategy;
-
     public function __construct(
-        DefaultDispatcher $dispatcher,
-        RetryStrategy $retryStrategy
-    ) {
-        $this->dispatcher = $dispatcher;
-        $this->retryStrategy = $retryStrategy;
-    }
+        private DefaultDispatcher $dispatcher,
+        private RetryStrategy $retryStrategy,
+    ) {}
 
     public function consume(Receiver $receiver): EnvelopeCollection
     {
         $envelopes = $receiver->fetch()->map(
-            function (Envelope $envelope) use ($receiver) {
-                return $this->tryToConsumeEnvelope($receiver, $envelope);
-            }
+            fn (Envelope $envelope) => $this->tryToConsumeEnvelope($receiver, $envelope),
         );
 
-        $failedEnvelopes = $envelopes->filter(function (Envelope $envelope) {
-            return null !== $envelope->stamps()->last(FailedStamp::NAME);
-        });
+        $failedEnvelopes = $envelopes->filter(
+            static fn (Envelope $envelope) => null !== $envelope->stamps()->last(FailedStamp::NAME),
+        );
 
         $this->rejectOrRetryFailedEnvelopes($receiver, $failedEnvelopes);
 
-        $successfulEnvelopes = $envelopes->filter(function (Envelope $envelope) {
-            return $envelope->stamps()->contains(new SuccessfulStamp());
-        });
+        $successfulEnvelopes = $envelopes->filter(
+            static fn (Envelope $envelope) => $envelope->stamps()->contains(new SuccessfulStamp()),
+        );
 
         $receiver->ack($successfulEnvelopes);
 
@@ -59,8 +44,8 @@ final class AutoReplyConsumer implements Consumer
 
     private function rejectOrRetryFailedEnvelopes(
         Receiver $receiver,
-        EnvelopeCollection $failedEnvelopes
-    ) {
+        EnvelopeCollection $failedEnvelopes,
+    ): void {
         $retryResponse = $this->retryStrategy->check($failedEnvelopes);
 
         $receiver->reject($retryResponse->findNotRetriable());

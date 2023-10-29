@@ -4,31 +4,16 @@ declare(strict_types=1);
 
 namespace MiniBus\Test\Transport\Unserializer\Denormalizer;
 
+use Exception;
 use MiniBus\Message;
 use MiniBus\Transport\Unserializer\Denormalizer;
 
 final class StubDenormalizer implements Denormalizer
 {
-    /**
-     * @var bool
-     */
-    private $supports;
-
-    /**
-     * @var mixed|null
-     */
-    private $result;
-
-    /**
-     * @param mixed|null $result
-     */
     public function __construct(
-        bool $supports,
-        $result = null
-    ) {
-        $this->supports = $supports;
-        $this->result = $result;
-    }
+        private bool $supports,
+        private ?Message $result = null,
+    ) {}
 
     public function supports(array $data): bool
     {
@@ -37,6 +22,10 @@ final class StubDenormalizer implements Denormalizer
 
     public function execute(array $data): Message
     {
+        if (!$this->result) {
+            throw new Exception('Unexpected call to denormalize data');
+        }
+
         return $this->result;
     }
 }

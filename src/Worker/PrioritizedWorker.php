@@ -9,46 +9,21 @@ use MiniBus\Transport\Receiver;
 final class PrioritizedWorker extends AbstractWorker
 {
     /**
-     * @var StopStrategy
-     */
-    private $stopStrategy;
-
-    /**
-     * @var int
-     */
-    private $sleepTimeInSeconds;
-
-    /**
-     * @var Receiver[]
-     */
-    private $receivers;
-
-    /**
-     * @var Consumer
-     */
-    private $consumer;
-
-    /**
      * @param Receiver[] $receivers
      */
     public function __construct(
-        StopStrategy $stopStrategy,
-        int $sleepTimeInSeconds,
-        Consumer $consumer,
-        array $receivers
-    ) {
-        $this->stopStrategy = $stopStrategy;
-        $this->sleepTimeInSeconds = $sleepTimeInSeconds;
-        $this->consumer = $consumer;
-        $this->receivers = $receivers;
-    }
+        private StopStrategy $stopStrategy,
+        private int $sleepTimeInSeconds,
+        private Consumer $consumer,
+        private array $receivers,
+    ) {}
 
     public function stopStrategy(): StopStrategy
     {
         return $this->stopStrategy;
     }
 
-    protected function receive()
+    protected function receive(): void
     {
         // make sure to start with the first one
         reset($this->receivers);

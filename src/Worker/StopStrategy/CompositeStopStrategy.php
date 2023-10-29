@@ -8,26 +8,21 @@ use MiniBus\Transport\Worker\StopStrategy;
 
 final class CompositeStopStrategy implements StopStrategy
 {
-    private $shouldStop = false;
-
-    private $strategies;
+    private bool $shouldStop = false;
 
     /**
      * @param StopStrategy[] $strategies
      */
-    public function __construct(array $strategies)
-    {
-        $this->strategies = $strategies;
-    }
+    public function __construct(private array $strategies) {}
 
-    public function iterate()
+    public function iterate(): void
     {
         foreach ($this->strategies as $strategy) {
             $strategy->iterate();
         }
     }
 
-    public function stop()
+    public function stop(): void
     {
         $this->shouldStop = true;
     }

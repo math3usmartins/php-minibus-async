@@ -6,9 +6,9 @@ namespace MiniBus\Transport\Worker;
 
 interface StopStrategy
 {
-    public function iterate();
+    public function iterate(): void;
 
     public function shouldStop(): bool;
 
-    public function stop();
+    public function stop(): void;
 }

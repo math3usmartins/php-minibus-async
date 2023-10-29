@@ -8,7 +8,7 @@ use MiniBus\Envelope\Stamp;
 
 final class SuccessfulStamp implements Stamp
 {
-    const NAME = 'transport:worker:consumer:successful';
+    public const NAME = 'transport:worker:consumer:successful';
 
     public function name(): string
     {

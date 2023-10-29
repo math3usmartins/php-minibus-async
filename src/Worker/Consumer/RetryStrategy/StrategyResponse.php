@@ -10,31 +10,19 @@ use MiniBus\Transport\Worker\Consumer\Stamp\RetriableStamp;
 
 final class StrategyResponse
 {
-    /**
-     * @var EnvelopeCollection
-     */
-    private $envelopes;
-
-    public function __construct(EnvelopeCollection $envelopes)
-    {
-        $this->envelopes = $envelopes;
-    }
+    public function __construct(private EnvelopeCollection $envelopes) {}
 
     public function findRetriable(): EnvelopeCollection
     {
         return $this->envelopes->filter(
-            function (Envelope $envelope) {
-                return null !== $envelope->stamps()->last(RetriableStamp::NAME);
-            }
+            static fn (Envelope $envelope) => null !== $envelope->stamps()->last(RetriableStamp::NAME),
         );
     }
 
     public function findNotRetriable(): EnvelopeCollection
     {
         return $this->envelopes->filter(
-            function (Envelope $envelope) {
-                return null === $envelope->stamps()->last(RetriableStamp::NAME);
-            }
+            static fn (Envelope $envelope) => null === $envelope->stamps()->last(RetriableStamp::NAME),
         );
     }
 }

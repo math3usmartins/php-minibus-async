@@ -15,11 +15,11 @@ use PHPUnit\Framework\TestCase;
  */
 final class JsonSerializerTest extends TestCase
 {
-    public function testItDoesEncodeAsJson()
+    public function testItDoesEncodeAsJson(): void
     {
         $message = new StubMessage('some-subject', ['header' => 'h'], ['body' => 'v']);
         $actualJson = (new JsonSerializer())->execute($message);
-        static::assertJson($actualJson);
+        self::assertJson($actualJson);
 
         $expected = [
             'headers' => [
@@ -29,6 +29,6 @@ final class JsonSerializerTest extends TestCase
             'body' => ['body' => 'v'],
         ];
 
-        static::assertEquals($expected, json_decode($actualJson, true));
+        self::assertEquals($expected, json_decode($actualJson, true, 512, JSON_THROW_ON_ERROR));
     }
 }

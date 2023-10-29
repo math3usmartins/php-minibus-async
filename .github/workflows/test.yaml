@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: math3usmartins/php-minibus-builder:php70
+      image: math3usmartins/php-minibus-builder:php80
       env:
         DEBIAN_FRONTEND: noninteractive
     steps:
@@ -33,7 +33,7 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     container:
-      image: math3usmartins/php-minibus-builder:php70
+      image: math3usmartins/php-minibus-builder:php80
       env:
         DEBIAN_FRONTEND: noninteractive
     steps:
@@ -48,7 +48,7 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     container:
-      image: math3usmartins/php-minibus-builder:php70
+      image: math3usmartins/php-minibus-builder:php80
       env:
         DEBIAN_FRONTEND: noninteractive
     steps:
@@ -63,11 +63,26 @@ jobs:
             -c phpstan.neon \
             -- src test
 
-  unit-tests-php70:
+  rector:
     needs: [build]
     runs-on: ubuntu-latest
     container:
-      image: math3usmartins/php-minibus-builder:php70
+      image: math3usmartins/php-minibus-builder:php80
+      env:
+        DEBIAN_FRONTEND: noninteractive
+    steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: app
+          path: ./
+      - run: tar -xf ./app.tar
+      - run: vendor/bin/rector --dry-run
+
+  unit-tests-php80:
+    needs: [build]
+    runs-on: ubuntu-latest
+    container:
+      image: math3usmartins/php-minibus-builder:php80
       env:
         DEBIAN_FRONTEND: noninteractive
     steps:
@@ -78,11 +93,11 @@ jobs:
       - run: tar -xf ./app.tar
       - run: vendor/bin/phpunit
 
-  unit-tests-php71:
+  unit-tests-php81:
     needs: [build]
     runs-on: ubuntu-latest
     container:
-      image: math3usmartins/php-minibus-builder:php71
+      image: math3usmartins/php-minibus-builder:php81
       env:
         DEBIAN_FRONTEND: noninteractive
     steps:
@@ -93,41 +108,11 @@ jobs:
       - run: tar -xf ./app.tar
       - run: vendor/bin/phpunit
 
-  unit-tests-php72:
+  unit-tests-php82:
     needs: [build]
     runs-on: ubuntu-latest
     container:
-      image: math3usmartins/php-minibus-builder:php72
-      env:
-        DEBIAN_FRONTEND: noninteractive
-    steps:
-      - uses: actions/download-artifact@master
-        with:
-          name: app
-          path: ./
-      - run: tar -xf ./app.tar
-      - run: vendor/bin/phpunit
-
-  unit-tests-php73:
-    needs: [build]
-    runs-on: ubuntu-latest
-    container:
-      image: math3usmartins/php-minibus-builder:php73
-      env:
-        DEBIAN_FRONTEND: noninteractive
-    steps:
-      - uses: actions/download-artifact@master
-        with:
-          name: app
-          path: ./
-      - run: tar -xf ./app.tar
-      - run: vendor/bin/phpunit
-
-  unit-tests-php74:
-    needs: [build]
-    runs-on: ubuntu-latest
-    container:
-      image: math3usmartins/php-minibus-builder:php74
+      image: math3usmartins/php-minibus-builder:php82
       env:
         DEBIAN_FRONTEND: noninteractive
     steps:
